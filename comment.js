@@ -82,4 +82,18 @@ router.patch('/comments/:id', auth, async (req, res) => {
 
 // Delete a comment by id
 router.delete('/comments/:id', auth, async (req, res) => {
-  try
+  try {
+    const comment = await Comment.findOneAndDelete({ _id: req.params.id, owner: req.user._id });
+
+    if (!comment) {
+      return res.status(404).send();
+    }
+
+    res.send(comment);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// Export router
+module.exports = router;
